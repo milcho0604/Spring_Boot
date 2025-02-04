@@ -1,13 +1,6 @@
 package tobyspring.helloboot;
 
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.apache.catalina.startup.Tomcat;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -25,18 +18,25 @@ import java.io.IOException;
 public class HellobootApplication {
 
     public static void main(String[] args) {
-        GenericWebApplicationContext genericApplicationContext = new GenericWebApplicationContext();
+        GenericWebApplicationContext genericApplicationContext = new GenericWebApplicationContext() {
+            @Override
+            protected void onRefresh() {
+                super.onRefresh();
+                ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
+                WebServer webServer = servletWebServerFactory.getWebServer(servletContext -> {
+                    servletContext.addServlet("dispatcherServlet",
+                                    new DispatcherServlet(this)) // this로 하는 이유: 확장하고자 하는 클래스 내부에서 참조하니 자기 자신을 참조
+                            .addMapping("/*");
+                });
+                webServer.start();
+            }
+        };
+
         genericApplicationContext.registerBean(HelloController.class); // class 정보만 넘김
         genericApplicationContext.registerBean(SimpleHelloService.class); // class 정보만 넘김
         genericApplicationContext.refresh();
 
-        ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
-        WebServer webServer = servletWebServerFactory.getWebServer(servletContext -> {
-            servletContext.addServlet("dispatcherServlet",
-                            new DispatcherServlet(genericApplicationContext))
-                    .addMapping("/*");
-        });
-        webServer.start();
+
 
     }
 
