@@ -23,6 +23,7 @@ public class HelloController {
     @GetMapping
     @ResponseBody
     public String hello(String name){
+        if (name == null || name.trim().length() == 0) throw new IllegalArgumentException();
         return helloService.sayHello(Objects.requireNonNull(name)); // null이라면 예외 아니라면 값을 그대로 return
     }
 }

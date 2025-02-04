@@ -26,9 +26,15 @@ public class HelloControllerTest {
     void failHelloController(){
         HelloController helloController = new HelloController(name -> name);
 
+        // null인 경우
         Assertions.assertThatThrownBy(() -> {
             String ret = helloController.hello(null);
-        }).isInstanceOf(NullPointerException.class);
+        }).isInstanceOf(IllegalArgumentException.class);
 
+        // 공백인 경우
+        Assertions.assertThatThrownBy(() -> {
+            String ret = helloController.hello("");
+        }).isInstanceOf(IllegalArgumentException.class);
     }
+
 }
