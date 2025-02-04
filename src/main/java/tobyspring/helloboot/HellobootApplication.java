@@ -3,44 +3,40 @@ package tobyspring.helloboot;
 
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import java.io.IOException;
 
 @Configuration
+@ComponentScan
 public class HellobootApplication {
 
     @Bean
-    public HelloController helloController(HelloService helloService){
-        return new HelloController(helloService);
+    public ServletWebServerFactory servletWebServerFactory(){
+        return new TomcatServletWebServerFactory();
     }
-
-    // SimpleHelloService return은 기능적으로 문제는 없지만, 의존성 주입 즉, 인터페이스 타입이 있으니 인터페이스 타입으로 return 하는 것이 더 적합
     @Bean
-    public HelloService helloService(){
-        return new SimpleHelloService();
+    public DispatcherServlet dispatcherServlet(){
+        return new DispatcherServlet();
     }
-
     public static void main(String[] args) {
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext() {
             @Override
             protected void onRefresh() {
                 super.onRefresh();
-                ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
+                ServletWebServerFactory servletWebServerFactory = this.getBean(ServletWebServerFactory.class);
+                DispatcherServlet dispatcherServlet = this.getBean(DispatcherServlet.class);
+//                dispatcherServlet.setApplicationContext(this); -> 어떻게 스프링 컨테이너를 통해 HelloController를 찾을까?
+//                -> 코드 상에는 dispatcherServlet applicationContext를 사용하지 않음.
+//                -> 스프링 컨테이너가 자체적으로 주입해줌
+
                 WebServer webServer = servletWebServerFactory.getWebServer(servletContext -> {
-                    servletContext.addServlet("dispatcherServlet",
-                                    new DispatcherServlet(this)) // this로 하는 이유: 확장하고자 하는 클래스 내부에서 참조하니 자기 자신을 참조
+                    servletContext.addServlet("dispatcherServlet", dispatcherServlet)
                             .addMapping("/*");
                 });
                 webServer.start();
@@ -49,7 +45,6 @@ public class HellobootApplication {
 
         applicationContext.register(HellobootApplication.class);
         applicationContext.refresh();
-
     }
 
 }

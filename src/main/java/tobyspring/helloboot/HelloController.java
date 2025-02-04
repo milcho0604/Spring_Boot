@@ -1,10 +1,12 @@
 package tobyspring.helloboot;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
 @RestController
+@MyComponent
 @RequestMapping("/hello")
 public class HelloController {
     // http://localhost:8080/hello?name=milcho
