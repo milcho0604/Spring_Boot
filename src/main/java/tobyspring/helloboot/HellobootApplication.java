@@ -12,6 +12,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,10 +22,14 @@ import java.io.IOException;
 public class HellobootApplication {
 
     public static void main(String[] args) {
+        GenericApplicationContext genericApplicationContext = new GenericApplicationContext();
+        genericApplicationContext.registerBean(HelloController.class); // class 정보만 넘김
+        genericApplicationContext.refresh();
+
         ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
         WebServer webServer = servletWebServerFactory.getWebServer(servletContext -> {
 
-            HelloController helloController = new HelloController();
+//            HelloController helloController = new HelloController();
             servletContext.addServlet("frontController", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,10 +38,11 @@ public class HellobootApplication {
                     if (req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())){
                         String name = req.getParameter("name"); // name 추출은 frontController의 역할
 
+                        HelloController helloController = genericApplicationContext.getBean(HelloController.class);
                         String ret = helloController.hello(name); // return 값
 
-                        resp.setStatus(HttpStatus.OK.value()); // 상태 코드
-                        resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE); // Header
+//                        resp.setStatus(HttpStatus.OK.value()); // 상태 코드
+                        resp.setContentType(MediaType.TEXT_PLAIN_VALUE); // Header
                         resp.getWriter().println(ret); // Body
                     } else if (req.getRequestURI().equals("/user")) {
                         //
