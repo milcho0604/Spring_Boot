@@ -38,9 +38,11 @@ public class HellobootApplication {
             servletContext.addServlet("hello", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+                    String name = req.getParameter("name");
+
                     resp.setStatus(HttpStatus.OK.value()); // 상태 코드
                     resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE); // Header
-                    resp.getWriter().println("Hello Servlet"); // Body
+                    resp.getWriter().println("Hello " + name); // Body
                 }
             }).addMapping("/hello"); // "/hello"로 들어오는 요청을 여기서 처리함.
 
