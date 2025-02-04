@@ -14,13 +14,11 @@ public class HelloController {
     // http -v GET ":8080/hello?name=micho"
 
     private final HelloService helloService;
-    private final ApplicationContext applicationContext;
+//    private final ApplicationContext applicationContext;
 
-    public HelloController(HelloService helloService, ApplicationContext applicationContext) {
+    public HelloController(HelloService helloService) {
         this.helloService = helloService;
-        this.applicationContext = applicationContext;
 
-        System.out.println(applicationContext);
     }
 
     @GetMapping
