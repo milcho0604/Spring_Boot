@@ -16,37 +16,28 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
 import java.io.IOException;
-
-//@SpringBootApplication
-//public class HellobootApplication {
-//
-//    public static void main(String[] args) {
-//        SpringApplication.run(HellobootApplication.class, args);
-//    }
-//
-//}
 
 public class HellobootApplication {
 
     public static void main(String[] args) {
-//        TomcatServletWebServerFactory tomcatServletWebServerFactory = new TomcatServletWebServerFactory();
-//        WebServer webServer = tomcatServletWebServerFactory.getWebServer();
-
         ServletWebServerFactory servletWebServerFactory = new TomcatServletWebServerFactory();
         WebServer webServer = servletWebServerFactory.getWebServer(servletContext -> {
+
+            HelloController helloController = new HelloController();
             servletContext.addServlet("frontController", new HttpServlet() {
                 @Override
                 protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
                     // 인증, 보안, 다국어, 공통 기능 등을 frontController에서 처리
-                    // -> ServletContainer의 기능을 frontController가 위임
+                    // -> ServletContainer의 기능을 frontController에게 위임
                     if (req.getRequestURI().equals("/hello") && req.getMethod().equals(HttpMethod.GET.name())){
-                        String name = req.getParameter("name");
+                        String name = req.getParameter("name"); // name 추출은 frontController의 역할
+
+                        String ret = helloController.hello(name); // return 값
 
                         resp.setStatus(HttpStatus.OK.value()); // 상태 코드
                         resp.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE); // Header
-                        resp.getWriter().println("Hello " + name); // Body
+                        resp.getWriter().println(ret); // Body
                     } else if (req.getRequestURI().equals("/user")) {
                         //
                     } else {
@@ -57,7 +48,6 @@ public class HellobootApplication {
             }).addMapping("/*"); // 모든 요청을 여기서 처리
 
         });
-
         webServer.start();
 
     }
