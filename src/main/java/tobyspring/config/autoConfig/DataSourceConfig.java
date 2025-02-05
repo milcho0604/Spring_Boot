@@ -1,6 +1,7 @@
 package tobyspring.config.autoConfig;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -16,7 +17,20 @@ import java.sql.Driver;
 @ConditionalMyOnClass("org.springframework.jdbc.core.JdbcOperations")
 @EnableMyConfigurationProperties(MyDataSourceProperties.class)
 public class DataSourceConfig {
+
     @Bean
+    @ConditionalMyOnClass("com.zaxxer.hikari.HikariDataSource")
+    DataSource hikariDataSource(MyDataSourceProperties properties){
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setDriverClassName(properties.getDriverClassName());
+        dataSource.setJdbcUrl(properties.getUrl());
+        dataSource.setPassword(properties.getPassword());
+        dataSource.setUsername(properties.getUsername());
+
+        return dataSource;
+    }
+    @Bean
+    @ConditionalOnMissingBean // 위 hikari가 없으면 아래 DB에 연결
     DataSource dataSource(MyDataSourceProperties properties) throws ClassNotFoundException {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
@@ -27,14 +41,5 @@ public class DataSourceConfig {
 
         return dataSource;
     }
-    @Bean
-    DataSource hikariDataSource(MyDataSourceProperties properties){
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName(properties.getDriverClassName());
-        dataSource.setJdbcUrl(properties.getUrl());
-        dataSource.setPassword(properties.getPassword());
-        dataSource.setUsername(properties.getUsername());
 
-        return dataSource
-    }
 }
