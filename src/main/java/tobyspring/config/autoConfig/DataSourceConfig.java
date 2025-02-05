@@ -1,5 +1,6 @@
 package tobyspring.config.autoConfig;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -23,7 +24,17 @@ public class DataSourceConfig {
         dataSource.setUrl(properties.getUrl());
         dataSource.setPassword(properties.getPassword());
         dataSource.setUsername(properties.getUsername());
-        return dataSource;
 
+        return dataSource;
+    }
+    @Bean
+    DataSource hikariDataSource(MyDataSourceProperties properties){
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setDriverClassName(properties.getDriverClassName());
+        dataSource.setJdbcUrl(properties.getUrl());
+        dataSource.setPassword(properties.getPassword());
+        dataSource.setUsername(properties.getUsername());
+
+        return dataSource
     }
 }
