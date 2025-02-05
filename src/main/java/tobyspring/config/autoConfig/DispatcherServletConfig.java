@@ -5,8 +5,10 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
+import tobyspring.config.MyAutoConfiguration;
 
-@Configuration // MetaAnnotation으로 class를 가지고 있음
+//@Configuration // MetaAnnotation으로 class를 가지고 있음
+@MyAutoConfiguration
 public class DispatcherServletConfig {
     // DispatcherServlet Bean
     @Bean
