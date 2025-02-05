@@ -9,12 +9,15 @@ import org.springframework.core.env.Environment;
 import tobyspring.config.MyAutoConfiguration;
 import tobyspring.config.MyConfigurationProperties;
 
+import java.util.Map;
+
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+import static org.springframework.core.annotation.AnnotationUtils.getAnnotationAttributes;
 
 @MyAutoConfiguration
 public class PropertyPostProcessorConfig {
     @Bean
-    BeanPostProcessor beanPostProcessor(Environment env){
+    BeanPostProcessor beanPostProcessor(Environment env) {
         return new BeanPostProcessor() {
             @Override
             public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -22,7 +25,10 @@ public class PropertyPostProcessorConfig {
                 if (anno == null)
                     return bean;
 
-                return Binder.get(env).bindOrCreate("", bean.getClass());
+                Map<String, Object> attr = getAnnotationAttributes(anno);
+                String prefix = (String) attr.get("prefix");
+
+                return Binder.get(env).bindOrCreate(prefix, bean.getClass());
 //                return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
             }
         };
