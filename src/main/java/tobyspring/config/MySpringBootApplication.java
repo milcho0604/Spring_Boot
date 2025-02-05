@@ -1,4 +1,4 @@
-package tobyspring.helloboot;
+package tobyspring.config;
 
 
 import org.springframework.context.annotation.ComponentScan;
@@ -13,5 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE) // Type은 class, Enum 등이 들어감
 @Configuration
 @ComponentScan
-public @interface MySpringBootAnnotation {
+@EnableMyAutoConfiguration
+public @interface MySpringBootApplication {
 }
