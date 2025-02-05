@@ -1,18 +1,22 @@
 package tobyspring.study;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.*;
 import org.springframework.core.type.AnnotatedTypeMetadata;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConditionalTest {
 
     @Test
-    void conditional(){
+    void conditional() {
         // true
         ApplicationContextRunner contextRunner = new ApplicationContextRunner();
         contextRunner.withUserConfiguration(Config1.class)
@@ -29,37 +33,42 @@ public class ConditionalTest {
                 });
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @Conditional(BooleanCondition.class)
+    @interface BooleanConditional {
+        boolean value();
+    }
+
     @Configuration
-    @Conditional(ConditionalTest.TrueCondition.class)
-    static class Config1{
+    @BooleanConditional(true)
+    static class Config1 {
         @Bean
-        MyBean myBean(){
+        MyBean myBean() {
             return new MyBean();
         }
     }
+
     @Configuration
-    @Conditional(ConditionalTest.FalseCondition.class)
-    static class Config2{
+    @BooleanConditional(false)
+    static class Config2 {
         @Bean
-        MyBean myBean(){
+        MyBean myBean() {
             return new MyBean();
         }
     }
 
-    static class MyBean {}
+    static class MyBean {
+    }
 
-    static class TrueCondition implements Condition {
+    static class BooleanCondition implements Condition {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return true;
+            Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(BooleanConditional.class.getName());
+            Boolean value = (Boolean) annotationAttributes.get("value");
+            return value;
         }
     }
-    static class FalseCondition implements Condition {
 
-        @Override
-        public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return false;
-        }
-    }
 }

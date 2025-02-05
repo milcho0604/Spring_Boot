@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.util.ClassUtils;
 import tobyspring.config.MyAutoConfiguration;
 
 //@Configuration // MetaAnnotation으로 class를 가지고 있음
@@ -23,7 +24,8 @@ public class JettyWebServerConfig {
 
         @Override
         public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-            return false;
+            return ClassUtils.isPresent("org.eclipse.jetty.server.Server",
+                    context.getClassLoader());
         }
     }
 }
