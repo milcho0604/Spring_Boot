@@ -10,6 +10,7 @@ import tobyspring.config.MyAutoConfiguration;
 import javax.sql.DataSource;
 import java.sql.Driver;
 
+
 @MyAutoConfiguration
 @ConditionalMyOnClass("org.springframework.jdbc.core.JdbcOperations")
 @EnableMyConfigurationProperties(MyDataSourceProperties.class)
@@ -20,9 +21,9 @@ public class DataSourceConfig {
 
         dataSource.setDriverClass((Class<? extends Driver>) Class.forName(properties.getDriverClassName()));
         dataSource.setUrl(properties.getUrl());
-        dataSource.setUsername(properties.getUsername());
         dataSource.setPassword(properties.getPassword());
-
+        dataSource.setUsername(properties.getUsername());
         return dataSource;
+
     }
 }

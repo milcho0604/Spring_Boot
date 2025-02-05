@@ -1,5 +1,6 @@
 package tobyspring.config.autoConfig;
 
+import org.springframework.stereotype.Component;
 import tobyspring.config.MyConfigurationProperties;
 
 @MyConfigurationProperties(prefix = "data")
