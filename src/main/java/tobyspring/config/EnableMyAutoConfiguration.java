@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Import({DispatcherServletConfig.class, TomcatWebServerConfig.class}) // 구성 정보에 직접 추가하는 방식 Scan 대상은 아니지만, class 정보를 넘기면 ok
+@Import(MyAutoConfigurationSelector.class) // 구성 정보에 직접 추가하는 방식 Scan 대상은 아니지만, class 정보를 넘기면 ok
 public @interface EnableMyAutoConfiguration {
 }
