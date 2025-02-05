@@ -1,6 +1,7 @@
 package tobyspring.config.autoConfig;
 
 import com.fasterxml.jackson.databind.util.ClassUtil;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import tobyspring.config.MyAutoConfiguration;
 public class TomcatWebServerConfig {
     // Tomcat 구성 Bean
     @Bean("tomcatWebServerFactory")
+    @ConditionalOnMissingBean
     public ServletWebServerFactory servletWebServerFactory(){
         return new TomcatServletWebServerFactory();
     }
