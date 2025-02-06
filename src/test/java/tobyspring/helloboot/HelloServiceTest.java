@@ -2,16 +2,6 @@ package tobyspring.helloboot;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 //@Retention(RetentionPolicy.RUNTIME)
 //@Target(ElementType.METHOD)
@@ -30,9 +20,22 @@ import java.lang.annotation.Target;
 
 
 public class HelloServiceTest {
+
+//    HelloRepository helloRepository;
+
     @Test
     void hellService() {
-        SimpleHelloService simpleHelloService = new SimpleHelloService();
+        SimpleHelloService simpleHelloService = new SimpleHelloService(new HelloRepository() {
+            @Override
+            public Hello findHello(String name) {
+                return null;
+            }
+
+            @Override
+            public void increaseCount(String name) {
+
+            }
+        });
 
         String ret = simpleHelloService.sayHello("Test");
 
