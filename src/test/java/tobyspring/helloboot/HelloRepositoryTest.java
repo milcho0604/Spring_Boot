@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
+@Transactional
 public class HelloRepositoryTest {
     @Autowired
     HelloRepository helloRepository;
@@ -16,10 +18,10 @@ public class HelloRepositoryTest {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    void setUp() {
-        jdbcTemplate.update("DELETE FROM hello");
-    }
+//    @BeforeEach
+//    void setUp() {
+//        jdbcTemplate.update("DELETE FROM hello");
+//    }
 
 
     @Test
