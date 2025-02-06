@@ -27,4 +27,9 @@ public class HelloController {
         if (name == null || name.trim().length() == 0) throw new IllegalArgumentException();
         return helloService.sayHello(Objects.requireNonNull(name)); // null이라면 예외 아니라면 값을 그대로 return
     }
+
+    @GetMapping("/count")
+    public String count(String name) {
+        return name + ": " + helloService.countOf(name);
+    }
 }

@@ -18,4 +18,8 @@ public class SimpleHelloService implements HelloService {
 
         return "Hello " + name;
     }
+
+    public int countOf(String name) {
+        return helloRepository.countOf(name);
+    }
 }
